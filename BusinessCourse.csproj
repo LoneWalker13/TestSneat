@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BusinessCourse_Application\**" />
+    <Compile Remove="BusinessCourse_Core\**" />
+    <Compile Remove="BusinessCourse_Infrastructure\**" />
+    <Content Remove="BusinessCourse_Application\**" />
+    <Content Remove="BusinessCourse_Core\**" />
+    <Content Remove="BusinessCourse_Infrastructure\**" />
+    <EmbeddedResource Remove="BusinessCourse_Application\**" />
+    <EmbeddedResource Remove="BusinessCourse_Core\**" />
+    <EmbeddedResource Remove="BusinessCourse_Infrastructure\**" />
+    <None Remove="BusinessCourse_Application\**" />
+    <None Remove="BusinessCourse_Core\**" />
+    <None Remove="BusinessCourse_Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Bootstrap.v3.Datetimepicker" Version="4.17.49" />
+    <PackageReference Include="Bootstrap.v3.Datetimepicker.CSS" Version="4.17.49" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.5.1" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+    <PackageReference Include="MediatR" Version="12.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Localization.Routing" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+    <PackageReference Include="Serilog" Version="4.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="BusinessCourse_Application\BusinessCourse_Application.csproj" />
+    <ProjectReference Include="BusinessCourse_Core\BusinessCourse_Core.csproj" />
+    <ProjectReference Include="BusinessCourse_Infrastructure\BusinessCourse_Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

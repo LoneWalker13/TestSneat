@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using AspnetCoreMvcFull.Models;
+using BusinessCourse.Models;
 
-namespace AspnetCoreMvcFull.Controllers;
+namespace BusinessCourse.Controllers;
 
 public class ExtendedUiController : Controller
 {
