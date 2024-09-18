@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Logging;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using AutoMapper;
 
 namespace BusinessCourse
 {
@@ -92,7 +93,6 @@ namespace BusinessCourse
       });
       services.AddRazorPages().AddRazorRuntimeCompilation();
       services.AddHealthChecks();
-      //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

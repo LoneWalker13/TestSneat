@@ -1,7 +1,9 @@
 using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Core;
+using BusinessCourse_Core.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,11 @@ namespace BusinessCourse_Infrastructure.Persistence
 
       System.Diagnostics.Debug.WriteLine("ApplicationDbContext::ctor ->" + GetHashCode());
     }
+
+    public DbSet<Members> Members { get; set; }
+    public DbSet<Lessons> Lessons { get; set; }
+    public DbSet<LessonSessions> LessonSessions { get; set; }
+    public DbSet<Member_LessonSessions> MemberLessonSessions { get; set; }
 
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

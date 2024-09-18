@@ -1,12 +1,15 @@
 using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Infrastructure.Persistence;
+using BusinessCourse_Infrastructure.Persistence.Repository;
 using BusinessCourse_Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,8 +25,15 @@ namespace BusinessCourse_Infrastructure
       configuration.GetConnectionString("DefaultConnection"),
       b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
       services.AddTransient<IDateTime, DateTimeService>();
+
+
+      services.AddTransient<IMember, MemberRepository>();
+
+      services.AddTransient<ILessons, LessonsRepository>();
+
+
 
       //services.AddDbContext<IntegrationEventLogContext>(options =>
       //{

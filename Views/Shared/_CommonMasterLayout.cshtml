@@ -1,9 +1,8 @@
-@inject IHttpContextAccessor httpContextAccessor
-
+@* @inject IHttpContextAccessor httpContextAccessor
+ *@
 <!DOCTYPE html>
 <html lang="en"
   class='light-style layout-menu-fixed'
-  data-theme="theme-default" data-assets-path='@((httpContextAccessor.HttpContext?.Request.PathBase ?? "") + "/")'
   data-framework="aspnetcore-mvc"
   data-template='vertical-menu-aspnet-core-mvc-template-free'>
 
