@@ -18,6 +18,9 @@ namespace BusinessCourse_Application
       AddFluentValidation(services);
       AddOptions(services, configuration);
 
+      //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+      ////services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+      //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
       services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
       return services;
