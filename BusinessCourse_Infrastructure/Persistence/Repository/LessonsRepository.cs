@@ -34,10 +34,27 @@ namespace BusinessCourse_Infrastructure.Persistence.Repository
       return entity;
     }
 
+    public async Task<Lessons> GetLessonsById(int lessonsId)
+    {
+      var entity = await _context.Lessons
+        .FirstOrDefaultAsync(x => x.Id == lessonsId);
+
+      return entity;
+    }
+
+
+    public async Task<LessonSessions> GetLessonsSessionsById(int lessonSessionsId)
+    {
+      var entity = await _context.LessonSessions
+       .FirstOrDefaultAsync(x => x.Id == lessonSessionsId);
+
+      return entity;
+    }
     public async Task<List<LessonSessions>> GetLessonsSessionsByLessonsId(int lessonsId)
     {
       var entity = await _context.LessonSessions
        .Where(x => x.LessonsId == lessonsId)
+       .Where(x => x.Status == 1)
        .OrderByDescending(x => x.SessionDate) 
        .ToListAsync();
 

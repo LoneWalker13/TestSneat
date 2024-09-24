@@ -1,6 +1,8 @@
 using AutoMapper;
 using BusinessCourse_Application.Services.Lessons.Command;
+using BusinessCourse_Application.Services.LessonSessions.Command;
 using BusinessCourse_Application.Services.Member.Command;
+using BusinessCourse_Application.Services.Membership.Command;
 using BusinessCourse_Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -21,7 +23,14 @@ namespace BusinessCourse_Application
     public void MapFunction()
     {
       CreateMap<AddMemberCommand, Members>();
+      CreateMap<UpdateMemberCommand, Members>();
       CreateMap<AddLessonCommand, Lessons>();
+      CreateMap<UpdateLessonsCommand, Lessons>();
+      CreateMap<Lessons, UpdateLessonsCommand>();
+      CreateMap<AddLessonSessionsCommand, LessonSessions>();
+      CreateMap<UpdateLessonSessionsCommand, LessonSessions>();
+      CreateMap<LessonSessions, UpdateLessonSessionsCommand>();
+      CreateMap<AddMembershipCommand, Membership>();
     }
   }
 }

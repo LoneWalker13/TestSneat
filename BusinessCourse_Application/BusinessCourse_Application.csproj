@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\MemberLessons\Query\" />
+    <Folder Include="Services\Membership\Response\" />
     <Folder Include="Services\Member\Response\" />
   </ItemGroup>
 

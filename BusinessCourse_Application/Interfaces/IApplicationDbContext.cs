@@ -14,6 +14,7 @@ namespace BusinessCourse_Application.Interfaces
     DbSet<Lessons> Lessons { get; set; }
     DbSet<LessonSessions> LessonSessions { get; set; }
     DbSet<Member_LessonSessions> MemberLessonSessions { get; set; }
+    DbSet<Membership> Membership { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
   }
 }

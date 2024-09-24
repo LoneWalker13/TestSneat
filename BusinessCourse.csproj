@@ -50,4 +50,8 @@
     <ProjectReference Include="BusinessCourse_Infrastructure\BusinessCourse_Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Members\MemberList\" />
+  </ItemGroup>
+
 </Project>

@@ -2,6 +2,7 @@ using AutoMapper;
 using BusinessCourse_Application.Common.Model;
 using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Core.Entities;
+using BusinessCourse_Core.Enum;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ namespace BusinessCourse_Application.Services.Member.Command
         var existMember = _context.Members.FirstOrDefault(x=>x.PhoneNumber.Equals(request.PhoneNumber.Trim()));
         if (existMember == null) {
           var member = _mapper.Map<Members>(request);
+          member.Status = (int)MembersStatus.Active;
           _context.Members.Add(member);
           await _context.SaveChangesAsync(cancellationToken);
 

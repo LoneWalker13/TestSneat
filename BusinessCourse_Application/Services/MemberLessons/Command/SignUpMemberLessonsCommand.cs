@@ -52,7 +52,8 @@ namespace BusinessCourse_Application.Services.MemberLessons.Command
               ChineseName = request.ChineseName,
               Email = request.Email,
               EnglishName = request.EnglishName,
-              PhoneNumber = request.PhoneNumber
+              PhoneNumber = request.PhoneNumber,
+              Status = (int)MembersStatus.Active
             };
             _context.Members.Add(member);
             await _context.SaveChangesAsync(cancellationToken);

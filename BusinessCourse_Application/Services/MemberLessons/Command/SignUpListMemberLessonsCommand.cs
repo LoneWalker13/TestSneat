@@ -4,6 +4,7 @@ using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Application.Services.MemberLessons.Request;
 using BusinessCourse_Application.Services.MemberLessons.Response;
 using BusinessCourse_Core.Entities;
+using BusinessCourse_Core.Enum;
 using CsvHelper;
 using CsvHelper.Configuration;
 using MediatR;
@@ -66,7 +67,8 @@ namespace BusinessCourse_Application.Services.MemberLessons.Command
                 ChineseName = signUpMember.ChineseName,
                 Email = signUpMember.Email,
                 EnglishName = signUpMember.EnglishName,
-                PhoneNumber = signUpMember.PhoneNumber
+                PhoneNumber = signUpMember.PhoneNumber,
+                Status = (int)MembersStatus.Active
               };
               _context.Members.Add(member);
               await _context.SaveChangesAsync(cancellationToken);

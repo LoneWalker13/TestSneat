@@ -12,6 +12,7 @@ namespace BusinessCourse_Application.Services.Member.Query
   public class GetMemberLessonSessionsQuery : IRequest<List<Member_LessonSessions>>
   {
     public int MemberId { get; set; }
+    public int LessonId { get; set; }
   }
 
   public class GetMemberLessonSessionsQueryHandler : IRequestHandler<GetMemberLessonSessionsQuery, List<Member_LessonSessions>>
@@ -25,7 +26,7 @@ namespace BusinessCourse_Application.Services.Member.Query
 
     public async Task<List<Member_LessonSessions>> Handle(GetMemberLessonSessionsQuery request, CancellationToken cancellationToken)
     {
-      var member = await _member.GetMember_LessonSessions(request.MemberId);
+      var member = await _member.GetMember_LessonSessions(request.MemberId,request.LessonId);
 
       return member;
     }

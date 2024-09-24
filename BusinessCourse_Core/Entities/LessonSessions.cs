@@ -10,5 +10,6 @@ namespace BusinessCourse_Core.Entities
   {
     public int LessonsId { get; set; }
     public DateTime SessionDate { get; set; }
+    public int Status { get; set; }
   }
 }

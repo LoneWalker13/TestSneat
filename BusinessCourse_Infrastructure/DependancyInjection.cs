@@ -30,8 +30,9 @@ namespace BusinessCourse_Infrastructure
 
 
       services.AddTransient<IMember, MemberRepository>();
-
       services.AddTransient<ILessons, LessonsRepository>();
+      services.AddTransient<IMemberLessonSessions, MemberLessonSessionsRepository>();
+      services.AddTransient<IMembership, MembershipRepository>();
 
 
 

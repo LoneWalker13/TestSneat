@@ -10,5 +10,9 @@ namespace BusinessCourse_Application.Interfaces
   public interface ILessons
   {
     Task<List<Lessons>> GetLessonsList();
+    Task<Lessons> GetLessonsById(int lessonsId);
+
+    Task<LessonSessions> GetLessonsSessionsById(int lessonSessionsId);
+    Task<List<LessonSessions>> GetLessonsSessionsByLessonsId(int lessonsId);
   }
 }
