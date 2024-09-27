@@ -1,5 +1,6 @@
 using AutoMapper;
 using BusinessCourse.Models.LessonSessions.LessonSessions;
+using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Application.Services.Lessons.Command;
 using BusinessCourse_Application.Services.Lessons.Query;
 using BusinessCourse_Application.Services.LessonSessions.Command;
@@ -8,6 +9,7 @@ using BusinessCourse_Core.Entities;
 using BusinessCourse_Core.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace BusinessCourse.Controllers
 {
@@ -37,6 +39,16 @@ namespace BusinessCourse.Controllers
       return View("LessonSessions/Index",model);
     }
 
+
+    public async Task<IActionResult> GetLessonsSessionsByLessonId(int lessonsId)
+    {
+      var lessonsSessions = await Mediator.Send(new GetLessonsSessionListByLessonsIdQuery() { LessonId = lessonsId });
+
+      var JsonResult = JsonConvert.SerializeObject(new { aaData = lessonsSessions });
+
+      return Json(JsonResult);
+    }
+
     public async Task<List<Lessons>> GetActiveLessons()
     {
       var lessons = await Mediator.Send(new GetLessonsQuery());
@@ -54,6 +66,7 @@ namespace BusinessCourse.Controllers
 
       List<SelectListItem> lessonsItems = new List<SelectListItem>();
       var lessons = await GetActiveLessons();
+      lessonsItems.Add(new SelectListItem() { Text = "--- 请选择 ---", Value = "0", Selected = true });
       lessons.ToList().ForEach(r => lessonsItems.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Name }));
       ViewBag.LessonsList = lessonsItems;
       var model = new AddLessonSessionsCommand();
@@ -67,6 +80,11 @@ namespace BusinessCourse.Controllers
       if (!ModelState.IsValid)
       {
         Response.StatusCode = 400;
+        List<SelectListItem> lessonsItems = new List<SelectListItem>();
+        var lessons = await GetActiveLessons();
+        lessonsItems.Add(new SelectListItem() { Text = "--- 请选择 ---", Value = "0", Selected = true });
+        lessons.ToList().ForEach(r => lessonsItems.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Name }));
+        ViewBag.LessonsList = lessonsItems;
         return PartialView("Lessons/_LessonSessionsAdd", request);
       }
 
@@ -89,6 +107,7 @@ namespace BusinessCourse.Controllers
       var lessonSession = await Mediator.Send(new GetLessonSessionsByIdQuery() { LessonSessionsId = lessonSessionsId });
       List<SelectListItem> lessonsItems = new List<SelectListItem>();
       var lessons = await GetActiveLessons();
+      lessonsItems.Add(new SelectListItem() { Text = "--- 请选择 ---", Value = "0", Selected = true });
       lessons.ToList().ForEach(r => lessonsItems.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Name }));
       ViewBag.LessonsList = lessonsItems;
       var model = _mapper.Map(lessonSession, new UpdateLessonSessionsCommand());
@@ -104,9 +123,10 @@ namespace BusinessCourse.Controllers
         Response.StatusCode = 400;
         List<SelectListItem> lessonsItems = new List<SelectListItem>();
         var lessons = await GetActiveLessons();
+        lessonsItems.Add(new SelectListItem() { Text = "--- 请选择 ---", Value = "0", Selected = true });
         lessons.ToList().ForEach(r => lessonsItems.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Name }));
         ViewBag.LessonsList = lessonsItems;
-        return PartialView("Bonus/_BonusUpdate", command);
+        return PartialView("Lessons/_LessonsEdit", command);
       }
       var response = await Mediator.Send(command);
       return Json(new
@@ -114,5 +134,18 @@ namespace BusinessCourse.Controllers
         result = response,
       });
     }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteLessonSessions(int lessonsSessionsId)
+    {
+
+      var response  = await Mediator.Send(new DeleteLessonSessionsCommand() { LessonSessionsId = lessonsSessionsId });
+      return Json(new
+      {
+        result = response,
+      });
+    }
+
+
   }
 }

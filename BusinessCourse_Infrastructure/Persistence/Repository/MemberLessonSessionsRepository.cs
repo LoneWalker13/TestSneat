@@ -1,6 +1,7 @@
 using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Core.Entities;
 using BusinessCourse_Core.Enum;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -26,5 +27,12 @@ namespace BusinessCourse_Infrastructure.Persistence.Repository
     {
       return new List<Member_LessonSessions>();
     }
+
+    public async Task<Member_LessonSessions> GetMemberLessonSessionsById(int memberLessionSessionId)
+    {
+      var entity = await _context.MemberLessonSessions.FirstOrDefaultAsync(x => x.Id == memberLessionSessionId);
+      return entity;
+    }
   }
 }
+

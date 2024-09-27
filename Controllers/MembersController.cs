@@ -4,6 +4,8 @@ using BusinessCourse.Models.Members.Members;
 using BusinessCourse_Application.Services.Lessons.Query;
 using BusinessCourse_Application.Services.Member.Command;
 using BusinessCourse_Application.Services.Member.Query;
+using BusinessCourse_Application.Services.Membership.Query;
+using BusinessCourse_Core.Entities;
 using BusinessCourse_Infrastructure.Services;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +65,12 @@ namespace BusinessCourse.Controllers
     {
       var member = await Mediator.Send(new GetMemberByIdQuery() { MemberId = memberId });
 
-      var model = new MemberViewModel() { Member = member };
+      var membershipList = await Mediator.Send(new GetMembershipListQuery());
+      List<SelectListItem> membershipListItem = new List<SelectListItem>();
+      membershipListItem.Add(new SelectListItem() { Text = "--- 请选择 ---", Value = "0", Selected = true });
+      membershipList.ToList().ForEach(r => membershipListItem.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Rank }));
+
+      var model = new MemberViewModel() { Member = member,MembershipListItem = membershipListItem };
 
       return PartialView("MemberList/MemberEdit", model);
     }

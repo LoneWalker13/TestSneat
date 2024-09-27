@@ -2,6 +2,7 @@ using AutoMapper;
 using BusinessCourse_Application.Services.Lessons.Command;
 using BusinessCourse_Application.Services.LessonSessions.Command;
 using BusinessCourse_Application.Services.Member.Command;
+using BusinessCourse_Application.Services.MemberLessons.Command;
 using BusinessCourse_Application.Services.Membership.Command;
 using BusinessCourse_Core.Entities;
 using System;
@@ -31,6 +32,10 @@ namespace BusinessCourse_Application
       CreateMap<UpdateLessonSessionsCommand, LessonSessions>();
       CreateMap<LessonSessions, UpdateLessonSessionsCommand>();
       CreateMap<AddMembershipCommand, Membership>();
+      CreateMap<UpdateMembershipCommand, Membership>();
+      CreateMap<Membership, UpdateMembershipCommand>();
+      CreateMap<UpdateMemberLessonsCommand, Member_LessonSessions>();
+      CreateMap<Member_LessonSessions, UpdateMemberLessonsCommand>();
     }
   }
 }

@@ -11,5 +11,7 @@ namespace BusinessCourse_Application.Interfaces
   public interface IMemberLessonSessions
   {
     Task<List<Member_LessonSessions>> GetMemberLessonSessionsList(int lessonSessionId, string name, Member_LessonSessionsPaymentStatus paymentStatus, Member_LessonSessionsAttendanceStatus attendanceStatus);
+
+    Task<Member_LessonSessions> GetMemberLessonSessionsById ( int memberLessionSessionId); 
   }
 }
