@@ -1,5 +1,208 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+
 @{
+    ViewData["Title"] = "Lesson Sessions";
+}
+<div class="modal fade" id="lessonSessionsModal" role="dialog" tabindex="-1" aria-hidden="true"></div>
+<div class="row">
+    <!-- Basic Layout -->
+    <div class="col-xxl">
+        <div class="card mb-2">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">@Localizer.GetString("LessonSessions")</h5> <small class="text-muted float-end"><button type="button" onclick="AddLessonSessions()" class="btn btn-primary"><i class="bx bx-plus"></i> &nbsp @Localizer.GetString("AddLessonSessions")</button></small>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("LessonName") :</label>
+                            <div class="col-md-8">
+                                <select id="Lessons" class="form-select">
+                                  @foreach (var status in ViewBag.LessonsList)
+                                  {
+                                      <option value="@status.Value" )>
+                                          @status.Text
+                                      </option>
+                                  }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("Status") :</label>
+                            <div class="col-md-4">
+                                <select id="LessonSessionsStatus" class="form-select">
+                                    @foreach (var status in ViewBag.LessonSessionsStatus)
+                                    {
+                                        <option value="@status.Value" )>
+                                            @status.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row float-end">
+                    <small class="text-muted float-end"><button type="button" id="btnsearch" class="btn btn-info">@Localizer.GetString("Search")</button></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Basic Bootstrap Table -->
+<div class="card">
+    <div class="text-nowrap table-striped table-responsive-sm">
+        <table id="MydataTableDiv" class="table">
+            <thead>
+                <tr>
+                    <th>@Localizer.GetString("SessionDate")</th>
+                    <th>@Localizer.GetString("Status")</th>
+                    <th>@Localizer.GetString("Actions")</th>
+                    <th style="display:none">@Localizer.GetString("Id")</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<!--/ Basic Bootstrap Table -->
+@section modal {
+
+}
+
+@section PageScripts {
+    <script>
+          var globalTableData = [];
+          $('#lessonSessionsModal').on('hidden.bs.modal', function () {
+              // Reset form fields
+              $(this).find('form').trigger('reset');
+          });
+
+          function AddLessonSessions(){
+            Site.AjaxGet("/LessonSessions/AddLessonSessions",
+                  function (data) {
+                    $('#lessonSessionsModal').html(data);
+                    $('#lessonSessionsModal').modal('show');
+                  });
+
+          }
+
+          function EditLessonSessions(id) {
+            Site.AjaxGet("/LessonSessions/EditLessonSessions/" + id,
+                  function (data) {
+                    $('#lessonSessionsModal').html(data);
+                    $('#lessonSessionsModal').modal('show');
+                  }
+            );
+          }
+
+
+
+          function DeleteLessonSessions(id) {
+              Site.AjaxGet("/LessonSessions/DeleteLessonSessions/" + id,
+                  function (data) {
+                      $('#lessonSessionsModal').html(data);
+                      $('#lessonSessionsModal').modal('show');
+                  });
+
+          }
+
+          function initLessonSessionsTable() {
+              var table = $("#MydataTableDiv").dataTable({
+                  "lengthChange": false,
+                  "pageLength": 20,
+                  "searching": false,
+                  "bProcessing": false,
+                  "bSort": true,
+                  "sPaginationType": "full_numbers",
+                  "bServerSide": false,
+                  "sAjaxSource": "/LessonSessions/GetLessonsSessionsByLessonId",
+                  "fnServerData": function (sSource, aoData, fnCallback) {
+                      $.ajax({
+                          "dataType": 'json',
+                          "type": "Get",
+                          "url": sSource,
+                        "data": { "status": $("#LessonSessionsStatus").find(":selected").val(), "lessonsId": $("#Lessons").find(":selected").val() },
+                          "success": function (json) {
+                              fnCallback(JSON.parse(json));
+                          }
+                      })
+                  },
+                  "aoColumns": [
+                      { "mData": "SessionDateStr" },
+                      { "mData": "Status" },
+                      { "mData": "action" },
+                      { "mData": "Id" }
+                  ],
+                  "aoColumnDefs": [
+                      {
+                          "aTargets": [1],
+                          "mRender": function (data, type, row) {
+                              if (data == true) {
+                                  var actions = '<span class="badge bg-label-primary me-1">Active</span>'
+                                  return actions;
+                              }
+                              else {
+                                  var actions = '<span class="badge bg-label-warning me-1">Inactive</span>'
+                                  return actions;
+
+                              }
+                          },
+                      },
+                      {
+                          "aTargets": [-2],
+                          "visible": true,
+                          "searchable": false,
+                          "mRender": function (data, type, row) {
+                                var action = '<div class="dropdown"><button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button><div class="dropdown-menu"><a class="dropdown-item" onclick="EditLessonSessions(\'' + row.Id + '\')";"><i class="bx bx-edit-alt me-1"></i> Edit</a><a class="dropdown-item" onclick="DeleteLessonSessions(\'' + row.Id + '\')"><i class="bx bx-trash me-1"></i> Delete</a></div></div>';
+                              return action;
+                          }
+                      },
+                      {
+                          "aTargets": [-1],
+                          "visible": false,
+                          "searchable": false
+                      },
+                  ],
+                  "order": [[0, "desc"]],
+              });
+
+              $("#MydataTableDiv_filter").css("float", "right");
+              $("#MydataTableDiv_paginate").css("float", "right");
+              $("#MydataTableDiv_length").find("label").css("display", "flex");
+              $("#MydataTableDiv_length").find("label").css("align-items", "center");
+              $("#MydataTableDiv_length").find("select").css("width", "55px");
+              $("#MydataTableDiv_length").find("select").css("margin", "5px");
+              $("#MydataTableDiv_filter").find("label").css("display", "flex");
+              $("#MydataTableDiv_filter").find("label").css("align-items", "center");
+              $("#MydataTableDiv_filter").css("float", "right");
+              $("#MydataTableDiv_filter").find("input").css("margin", "5px");
+              $("#MydataTableDiv_filter").find("input").css("margin-right", "0px");
+
+              $('#btnsearch').on('click', function () {
+                globalTableData.api().ajax.reload();
+              });
+
+              globalTableData = table;
+
+              // $(function () {
+              //     $('#memberGroupFilterForm').each(function () {
+              //         $(this).find('input').keypress(function (e) {
+              //             if (e.which == 10 || e.which == 13) {
+              //                 $('#btnsearch').click();
+              //             }
+              //         });
+              //     });
+              // });
+        }
+
+          $(document).ready(function () {
+              initLessonSessionsTable();
+          })
+    </script>
 }

@@ -29,6 +29,10 @@
 
 @section PageScripts{ @RenderSection("PageScripts", required: false) }
 
+@section modal {
+    @RenderSection("modal", required: false)
+}
+
 @{
   bool isMenu = ViewData["isMenu"] != null && Convert.ToBoolean(ViewData["isMenu"]);
 }
@@ -61,10 +65,10 @@
         <!-- / Content -->
 
         <!-- Footer -->
-        @if (@ViewData["isFooter"] != null && Convert.ToBoolean(@ViewData["isFooter"]))
+@*         @if (@ViewData["isFooter"] != null && Convert.ToBoolean(@ViewData["isFooter"]))
         {
           @await Html.PartialAsync("Sections/Footer/_Footer")
-        }
+        } *@
         <!-- / Footer -->
         <div class="content-backdrop fade"></div>
       </div>

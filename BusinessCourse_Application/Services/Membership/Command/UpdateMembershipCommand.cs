@@ -12,9 +12,10 @@ namespace BusinessCourse_Application.Services.Membership.Command
 {
   public class UpdateMembershipCommand : IRequest<Result>
   {
-    public int MembershipId { get; set; }
+    public int Id { get; set; }
     public string Rank { get; set; }
     public int Tier { get; set; }
+    public bool Status { get; set; }
 
     public class UpdateMembershipCommandHandler : IRequestHandler<UpdateMembershipCommand, Result>
     {
@@ -29,7 +30,7 @@ namespace BusinessCourse_Application.Services.Membership.Command
 
       public async Task<Result> Handle(UpdateMembershipCommand request, CancellationToken cancellationToken)
       {
-        var membership = _context.Membership.FirstOrDefault(x=>x.Id == request.MembershipId);
+        var membership = _context.Membership.FirstOrDefault(x=>x.Id == request.Id);
         _mapper.Map(request, membership);
         _context.Membership.Update(membership);
         await _context.SaveChangesAsync(cancellationToken);

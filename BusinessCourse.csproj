@@ -51,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\LessonSessions\LessonSessions\" />
     <Folder Include="Resources\Members\MemberList\" />
   </ItemGroup>
 

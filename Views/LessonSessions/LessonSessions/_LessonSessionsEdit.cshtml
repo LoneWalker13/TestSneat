@@ -1,5 +1,85 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+@using BusinessCourse_Core.Enum
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+
+@model BusinessCourse_Application.Services.LessonSessions.Command.UpdateLessonSessionsCommand
+
+<form id="lessonSessionsForm" enctype="multipart/form-data">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">@Localizer.GetString("EditLessonSessions")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" asp-for="Id" />
+                <div class="row g-6 mb-4">
+                        <label for="html5-datetime-local-input" class="col-4 col-form-label">@Localizer.GetString("SessionDate")</label>
+                        <div class="col-8">
+                            <input class="form-control" type="datetime-local" id="datetimeInputAddLessonSessions" asp-for="SessionDate" />
+                        </div>
+                </div>
+                <div class="row g-6">
+                      <label class="col-form-label col-4">@Localizer.GetString("Status")</label>
+                    <div class="col-8 mb-0 col-form-label">
+                          <input type="radio" asp-for="Status" value="@LessonSessionsStatus.Active" /> @Localizer.GetString("Active")
+                          <input type="radio" asp-for="Status" value="@LessonSessionsStatus.Inactive" /> @Localizer.GetString("Inactive")
+                      </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submit" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    $("#submit").click(function () {
+        var formValid = $('#lessonSessionsForm').valid();
+
+        if (!formValid) return;
+        // initToastr();
+        showLoading();
+        editRecord();
+    });
+
+    function editRecord() {
+        var formData = new FormData($('#lessonSessionsForm')[0]);
+
+        $.ajax({
+            url: "/LessonSessions/EditLessonSessions",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: formData,
+            dataType: "json",
+            success: function (data) {
+                hideLoading();
+                if (data.result.succeeded == true) {
+                    toastr["success"]("The action has been completed successfully", "Success");
+                    globalTableData.api().ajax.reload();
+                    $('#lessonSessionsModal').modal('hide');
+                } else {
+                    toastr["error"](data.message, "Error");
+                }
+            },
+            error: function (e) {
+                hideLoading();
+                $('#lessonSessionsModal').modal('hide');
+                toastr["error"](e, "Error");
+            }
+        });
+    }
+
+    var showLoading = function () {
+        $(".loading").show();
+    }
+
+    var hideLoading = function () {
+        $(".loading").hide();
+    }
+</script>

@@ -28,6 +28,7 @@ namespace BusinessCourse_Infrastructure
       services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
       services.AddTransient<IDateTime, DateTimeService>();
 
+      services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
       services.AddTransient<IMember, MemberRepository>();
       services.AddTransient<ILessons, LessonsRepository>();

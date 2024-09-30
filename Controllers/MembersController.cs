@@ -23,7 +23,7 @@ namespace BusinessCourse.Controllers
       _configuration = configuration;
     }
 
-    public async Task<IActionResult> MemberList()
+    public async Task<IActionResult> Index()
     {
 
       return View("MemberList/MemberList");

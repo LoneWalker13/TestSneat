@@ -18,6 +18,10 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using AutoMapper;
+using BusinessCourse_Application.Common.Model;
+using BusinessCourse_Application.Services.Membership.Command;
+using MediatR;
+using System;
 
 namespace BusinessCourse
 {
@@ -25,7 +29,7 @@ namespace BusinessCourse
   {
     public IConfiguration Configuration { get; }
     public IWebHostEnvironment Environment { get; }
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+    public Startup(IConfiguration configuration, IWebHostEnvironment environment )
     {
       Configuration = configuration;
 

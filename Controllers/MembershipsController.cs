@@ -6,6 +6,7 @@ using BusinessCourse_Application.Services.Membership.Query;
 using BusinessCourse_Core.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace BusinessCourse.Controllers
 {
@@ -32,9 +33,13 @@ namespace BusinessCourse.Controllers
       return View("Memberships/Index");
     }
 
-    public async Task<IActionResult> GetMembershipsList()
+    [HttpGet]
+    public async Task<IActionResult> GetMembershipsList(string searchString)
     {
-      var memberships = await Mediator.Send(new GetLessonsQuery());
+      var memberships = await Mediator.Send(new GetMembershipListQuery());
+
+      if (!string.IsNullOrEmpty(searchString))
+        memberships = memberships.Where(r => r.Rank.Contains(searchString,StringComparison.InvariantCultureIgnoreCase)).ToList();
 
       var JsonResult = JsonConvert.SerializeObject(new { aaData = memberships });
 
@@ -67,10 +72,10 @@ namespace BusinessCourse.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> EditMemberships(int membershipId)
+    public async Task<IActionResult> EditMemberships(int id)
     {
 
-      var membership = await Mediator.Send(new GetMembershipByIdQuery() { MembershipId = membershipId });
+      var membership = await Mediator.Send(new GetMembershipByIdQuery() { MembershipId = id });
 
       var model = _mapper.Map(membership, new UpdateMembershipCommand());
       return PartialView("Memberships/_MembershipsEdit", model);

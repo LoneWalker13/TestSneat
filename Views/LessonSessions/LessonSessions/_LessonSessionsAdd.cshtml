@@ -1,5 +1,111 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+
+@model BusinessCourse_Application.Services.LessonSessions.Command.AddLessonSessionsCommand
+
+<form id="lessonSessionsForm" enctype="multipart/form-data">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">@Localizer.GetString("AddLessonSessions")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4 g-6">
+                    <label class="col-4 col-form-label" for="basic-default-name">@Localizer.GetString("LessonName")</label>
+                    <div class="col-8">
+                        <select id="Lessons" class="form-select" asp-for="LessonsId">
+                            @foreach (var status in ViewBag.LessonsList)
+                            {
+                                <option value="@status.Value" )>
+                                    @status.Text
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="mb-4 row">
+                    <label  class="col-4 col-form-label">@Localizer.GetString("SessionDate")</label>
+                    <div class="col-8">
+                        <input class="form-control" type="datetime-local" id="datetimeInputAddLessonSessions" asp-for="SessionDate" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submit" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    function setCurrentDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so we add 1
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        // Combine to the datetime-local format: YYYY-MM-DDTHH:MM
+        const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+        // Set the value of the datetime-local input to the current time
+        document.getElementById('datetimeInputAddLessonSessions').value = currentDateTime;
+    }
+
+    $("#submit").click(function () {
+        var formValid = $('#lessonSessionsForm').valid();
+
+        if (!formValid) return;
+        // initToastr();
+        showLoading();
+        addRecord();
+    });
+
+    function addRecord() {
+        var formData = new FormData($('#lessonSessionsForm')[0]);
+
+        $.ajax({
+            url: "/LessonSessions/AddLessonSessions",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: formData,
+            dataType: "json",
+            success: function (data) {
+                hideLoading();
+                if (data.result.succeeded == true) {
+                    toastr["success"]("The action has been completed successfully", "Success");
+                    globalTableData.api().ajax.reload();
+                    $('#lessonSessionsModal').modal('hide');
+                } else {
+                    toastr["error"](data.message, "Error");
+                }
+            },
+            error: function (e) {
+                hideLoading();
+                $('#lessonSessionsModal').modal('hide');
+                toastr["error"](e, "Error");
+            }
+        });
+    }
+
+    var showLoading = function () {
+        $(".loading").show();
+    }
+
+    var hideLoading = function () {
+        $(".loading").hide();
+    }
+
+
+    $(document).ready(function () {
+        setCurrentDateTime()
+        // initLessonsTable()
+    })
+</script>

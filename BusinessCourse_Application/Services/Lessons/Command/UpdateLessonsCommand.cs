@@ -13,9 +13,10 @@ namespace BusinessCourse_Application.Services.Lessons.Command
 {
   public class UpdateLessonsCommand : IRequest<Result>
   {
-    public int LessonId { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public LessonsStatus Status { get; set; }
 
     public class UpdateLessonCommandHandler : IRequestHandler<UpdateLessonsCommand, Result>
     {
@@ -30,7 +31,7 @@ namespace BusinessCourse_Application.Services.Lessons.Command
 
       public async Task<Result> Handle(UpdateLessonsCommand request, CancellationToken cancellationToken)
       {
-        var lesson = _context.Lessons.First(x => x.Id == request.LessonId);
+        var lesson = _context.Lessons.First(x => x.Id == request.Id);
         _mapper.Map(request,lesson);
         _context.Lessons.Update(lesson);
         await _context.SaveChangesAsync(cancellationToken);

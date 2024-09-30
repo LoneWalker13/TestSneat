@@ -1,6 +1,8 @@
 using AutoMapper;
 using BusinessCourse_Application.Common.Model;
 using BusinessCourse_Application.Interfaces;
+using BusinessCourse_Core.Common;
+using BusinessCourse_Core.Enum;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -12,9 +14,9 @@ namespace BusinessCourse_Application.Services.LessonSessions.Command
 {
   public class UpdateLessonSessionsCommand : IRequest<Result>
   {
-    public int LessionId { get; set; }
+    public int Id { get; set; }
     public DateTime SessionDate { get; set; }
-    public int Status { get; set; }
+    public LessonSessionsStatus Status { get; set; }
 
     public class UpdateLessonSessionsCommandHandler : IRequestHandler<UpdateLessonSessionsCommand, Result>
     {
@@ -29,8 +31,9 @@ namespace BusinessCourse_Application.Services.LessonSessions.Command
 
       public async Task<Result> Handle(UpdateLessonSessionsCommand request, CancellationToken cancellationToken)
       {
-        var lessonSessions = _context.LessonSessions.First(x=>x.Id == request.LessionId);
+        var lessonSessions = _context.LessonSessions.First(x=>x.Id == request.Id);
         _mapper.Map(request, lessonSessions);
+        lessonSessions.SessionDate = DateTimeHelper.ConvertToUtc(lessonSessions.SessionDate);
         _context.LessonSessions.Update(lessonSessions);
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -1,5 +1,4 @@
-@* @inject IHttpContextAccessor httpContextAccessor
- *@
+
 <!DOCTYPE html>
 <html lang="en"
   class='light-style layout-menu-fixed'
@@ -10,16 +9,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-  @{
-        string title = ViewData["title"] as string ?? "";
-        string appName = TempData.Peek("appName") as string ?? "";
-        string productPage = TempData.Peek("productPage") as string ?? "";
-    }
-  <title>@title | @appName - Asp.Net Core MVC Free Admin Template</title>
+
+  <title>Business Course</title>
   <meta name="description" content="" />
 
-  <!-- Canonical SEO -->
-  <link rel="canonical" href='@productPage'>
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="~/img/favicon/favicon.ico" />
 
@@ -48,16 +41,37 @@
   @RenderSection("VendorScripts", required: false)
 
 
+
+  <partial name="_ValidationScriptsPartial" />
+
+  <partial name="_GeneralModals" />
+
+  @RenderSection("modal", required: false)
   
 
   <!-- Main JS-->
   <script src='~/js/main.js'></script>
+
+    <div class="loading">
+        Loading&#8230;
+    </div>
 
   <!-- Page Scripts-->
   @RenderSection("PageScripts", required: false)
 
   <!-- Place this tag in your head or just before your close body tag. -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://cdn.datatables.net/1.11.2/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.1.1/js/dataTables.dateTime.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.24/sorting/datetime-moment.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.11.4/api/sum().js"></script>
 
 </body>
 

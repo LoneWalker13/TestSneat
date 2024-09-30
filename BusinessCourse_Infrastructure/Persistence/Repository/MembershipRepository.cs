@@ -24,10 +24,11 @@ namespace BusinessCourse_Infrastructure.Persistence.Repository
     public async Task<List<Membership>> GetMembershipList()
     {
       var entity = await _context.Membership
-     .OrderBy(x => x.Tier)
-     .ToListAsync();
+      .OrderBy(x => x.Tier)
+      .ToListAsync();
 
       return entity;
+
     }
 
     public async Task<Membership> GetMembershipById(int membershipId)

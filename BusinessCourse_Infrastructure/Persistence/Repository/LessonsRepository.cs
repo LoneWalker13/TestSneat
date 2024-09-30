@@ -54,7 +54,7 @@ namespace BusinessCourse_Infrastructure.Persistence.Repository
     {
       var entity = await _context.LessonSessions
        .Where(x => x.LessonsId == lessonsId)
-       .Where(x => x.Status == 1)
+       .Where(x => x.Status < 2)
        .OrderByDescending(x => x.SessionDate) 
        .ToListAsync();
 

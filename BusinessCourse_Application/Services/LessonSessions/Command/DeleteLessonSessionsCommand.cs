@@ -12,7 +12,7 @@ namespace BusinessCourse_Application.Services.LessonSessions.Command
 {
   public class DeleteLessonSessionsCommand : IRequest<Result>
   {
-    public int LessonSessionsId { get; set; }
+    public int Id { get; set; }
 
     public class DeleteLessonSessionsCommandHandler : IRequestHandler<DeleteLessonSessionsCommand, Result>
     {
@@ -27,8 +27,8 @@ namespace BusinessCourse_Application.Services.LessonSessions.Command
 
       public async Task<Result> Handle(DeleteLessonSessionsCommand request, CancellationToken cancellationToken)
       {
-        var lessonSessions = _context.LessonSessions.First(x=>x.Id == request.LessonSessionsId);
-        lessonSessions.Status = 0;
+        var lessonSessions = _context.LessonSessions.First(x=>x.Id == request.Id);
+        lessonSessions.Status = 3;
         _context.LessonSessions.Update(lessonSessions);
         await _context.SaveChangesAsync(cancellationToken);
 
