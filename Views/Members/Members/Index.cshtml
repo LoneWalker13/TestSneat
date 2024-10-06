@@ -17,35 +17,65 @@
                 <div class="row mb-2">
                     <div class="col-md-6">
                         <div class="row">
-                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("LessonName") :</label>
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("DateFrom") :</label>
                             <div class="col-md-8">
-                                <select id="Lessons" class="form-select">
-                                    @foreach (var status in ViewBag.LessonsList)
-                                    {
-                                        <option value="@status.Value" )>
-                                            @status.Text
-                                        </option>
-                                    }
-                                </select>
+                                <input class="form-control" type="date" id="dateFrom" />
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("Status") :</label>
-                            <div class="col-md-4">
-                                <select id="LessonSessionsStatus" class="form-select">
-                                    @foreach (var status in ViewBag.LessonSessionsStatus)
-                                    {
-                                        <option value="@status.Value" )>
-                                            @status.Text
-                                        </option>
-                                    }
-                                </select>
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("DateTo") :</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="date" id="dateTo" />
                             </div>
                         </div>
                     </div>
 
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("PhoneNumber") :</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="searchStringPhoneNumber" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("Name") :</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="searchStringName" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("MemberCode") :</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="searchStringMemberCode" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("Rank") :</label>
+                            <div class="col-md-8">
+                                <select id="ranks" class="form-select">
+                                  @foreach (var rank in ViewBag.RankList)
+                                  {
+                                      <option value="@rank.Value" )>
+                                          @rank.Text
+                                      </option>
+                                  }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row float-end">
                     <small class="text-muted float-end"><button type="button" id="btnsearch" class="btn btn-info">@Localizer.GetString("Search")</button></small>
@@ -82,10 +112,39 @@
 
 @section PageScripts {
     <script>
+          async function setCurrentDate()
+          {
+              var dateFrom = new Date();
+              var dateTo = new Date()
+
+              // Subtract 7 days from the current date
+              dateFrom.setDate(dateTo.getDate() - 7);
+
+              // Get the year, month, and day in local time
+              var yearTo = dateTo.getFullYear();
+              var monthTo = ('0' + (dateTo.getMonth() + 1)).slice(-2);  // Months are zero-based
+              var dayTo = ('0' + dateTo.getDate()).slice(-2);  // Add leading zero if necessary
+        
+              // Construct the formatted date as YYYY-MM-DD
+              var formattedDateTo = `${yearTo}-${monthTo}-${dayTo}`;
+
+              // Get the year, month, and day in local time
+              var yearFrom = dateFrom.getFullYear();
+              var monthFrom = ('0' + (dateFrom.getMonth() + 1)).slice(-2);  // Months are zero-based
+              var dayFrom = ('0' + dateFrom.getDate()).slice(-2);  // Add leading zero if necessary
+        
+              // Construct the formatted date as YYYY-MM-DD
+              var formattedDateFrom = `${yearFrom}-${monthFrom}-${dayFrom}`;
+
+              // Set the formatted date as the value of the input field
+              $('#dateTo').val(formattedDateTo);
+              $('#dateFrom').val(formattedDateFrom);
+          }
+
           var globalTableData = [];
-        $('#membersModal').on('hidden.bs.modal', function () {
-              // Reset form fields
-              $(this).find('form').trigger('reset');
+          $('#membersModal').on('hidden.bs.modal', function () {
+                // Reset form fields
+                $(this).find('form').trigger('reset');
           });
 
           function AddMember(){
@@ -118,9 +177,25 @@
           // }
 
           function initMemberTable() {
+            $('#searchStringName').on('keyup', function (event) {
+                if (event.key === "Enter") {
+                    globalTableData.api().ajax.reload();
+                }
+            });
+            $('#searchStringMemberCode').on('keyup', function (event) {
+                if (event.key === "Enter") {
+                    globalTableData.api().ajax.reload();
+                }
+            });
+            $('#searchStringPhoneNumber').on('keyup', function (event) {
+                if (event.key === "Enter") {
+                    globalTableData.api().ajax.reload();
+                }
+            });
+
               var table = $("#MydataTableDiv").dataTable({
                   "lengthChange": false,
-                  "pageLength": 20,
+                  "pageLength": 40,
                   "searching": false,
                   "bProcessing": false,
                   "bSort": true,
@@ -132,7 +207,8 @@
                           "dataType": 'json',
                           "type": "Get",
                           "url": sSource,
-                        "data": { "status": $("#LessonSessionsStatus").find(":selected").val(), "lessonsId": $("#Lessons").find(":selected").val() },
+                        "data": {"name": $("#searchStringName").val(), "phoneNumber": $("#searchStringPhoneNumber").val(),"memberCode": $("#searchStringMemberCode").val(),
+                                  "rank": $("#ranks").find(":selected").val(),"dateFrom": $("#dateFrom").val(),"dateTo": $("#dateTo").val()},
                           "success": function (json) {
                               fnCallback(JSON.parse(json));
                           }
@@ -142,7 +218,7 @@
                     { "mData": "ChineseName" },
                     { "mData": "EnglishName" },
                     { "mData": "PhoneNumber" },
-                    { "mData": "Tier" },
+                    { "mData": "Rank" },
                     { "mData": "MemberCode" },
                     { "mData": "Status" },
                     { "mData": "CreatedStr" },
@@ -211,7 +287,8 @@
               // });
         }
 
-          $(document).ready(function () {
+          $(document).ready(async function () {
+            await setCurrentDate();
             initMemberTable();
           })
     </script>

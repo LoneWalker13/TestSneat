@@ -33,8 +33,10 @@ namespace BusinessCourse_Infrastructure.Persistence
     public DbSet<Members> Members { get; set; }
     public DbSet<Lessons> Lessons { get; set; }
     public DbSet<LessonSessions> LessonSessions { get; set; }
-    public DbSet<Member_LessonSessions> MemberLessonSessions { get; set; }
+    public DbSet<MemberLessonSessions> MemberLessonSessions { get; set; }
     public DbSet<Membership> Membership { get; set; }
+    public DbSet<ViewMemberList> ViewMemberList { get; set; }
+    public DbSet<GetMemberLessonSessionsList> GetMemberLessonSessionsList { get; set; }
 
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

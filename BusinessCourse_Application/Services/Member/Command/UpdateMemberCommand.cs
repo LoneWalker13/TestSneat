@@ -13,12 +13,13 @@ namespace BusinessCourse_Application.Services.Member.Command
 {
   public class UpdateMemberCommand : IRequest<Result>
   {
-    public int MemberId { get; set; }
+    public int Id { get; set; }
     public string ChineseName { get; set; }
-    public string EnglishName { get; set; }
-    public string Email { get; set; }
-    public string MemberCode { get; set; }
-    public string Remark { get; set; }
+    public string? EnglishName { get; set; }
+    public string PhoneNumber { get; set; }
+    public string? Email { get; set; }
+    public string? MemberCode { get; set; }
+    public string? Remark { get; set; }
     public int  MembershipId { get; set; }
     public int Status { get; set; }
 
@@ -36,7 +37,7 @@ namespace BusinessCourse_Application.Services.Member.Command
       public async Task<Result> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
       {
 
-        var member = _context.Members.FirstOrDefault(x => x.Id == request.MemberId);
+        var member = _context.Members.FirstOrDefault(x => x.Id == request.Id);
         _mapper.Map(request, member);
         _context.Members.Update(member);
         await _context.SaveChangesAsync(cancellationToken);

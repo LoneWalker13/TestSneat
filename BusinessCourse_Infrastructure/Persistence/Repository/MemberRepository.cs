@@ -1,3 +1,4 @@
+using BusinessCourse_Application.Common.Extensions;
 using BusinessCourse_Application.Interfaces;
 using BusinessCourse_Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -25,18 +26,23 @@ namespace BusinessCourse_Infrastructure.Persistence.Repository
 
 
 
-    public async Task<List<Members>> GetMemberList(string name, string phoneNumber,string memberCode)
+    public async Task<List<ViewMemberList>> GetMemberList(string name, string phoneNumber,string memberCode,DateTime from, DateTime to, int rank)
     {
-      var entity = await _context.Members.
-        FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber);
+      var entity = await _context.ViewMemberList
+        .WhereIf(!string.IsNullOrEmpty(name), x => x.ChineseName.Contains(name) || x.EnglishName.Contains(name))
+        .WhereIf(!string.IsNullOrEmpty(phoneNumber), x => x.PhoneNumber.Contains(phoneNumber))
+        .WhereIf(!string.IsNullOrEmpty(memberCode), x => x.MemberCode.Contains(memberCode))
+        .WhereIf(rank > 0 , x => x.MembershipId == rank)
+        .WhereIf(string.IsNullOrEmpty(name) && string.IsNullOrEmpty(phoneNumber) && string.IsNullOrEmpty(memberCode) && rank == 0, x => x.Created >= from && x.Created <= to)
+        .ToListAsync();
 
-      return new List<Members>();
+      return entity;
     }
 
-    public async Task<List<Member_LessonSessions>> GetMember_LessonSessions(int memberId, int lessonId)
+    public async Task<List<MemberLessonSessions>> GetMember_LessonSessions(int memberId, int lessonId)
     {
       var entity = await _context.MemberLessonSessions
-        .Where(x => x.MemberId == memberId && x.LessonsId == lessonId)
+        .Where(x => x.MembersId == memberId && x.LessonsId == lessonId)
           .OrderByDescending(x=>x.Created)
           .ToListAsync();
 

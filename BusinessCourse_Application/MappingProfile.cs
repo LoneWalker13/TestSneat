@@ -25,6 +25,7 @@ namespace BusinessCourse_Application
     {
       CreateMap<AddMemberCommand, Members>();
       CreateMap<UpdateMemberCommand, Members>();
+      CreateMap<Members, UpdateMemberCommand>();
       CreateMap<AddLessonCommand, Lessons>();
       CreateMap<UpdateLessonsCommand, Lessons>();
       CreateMap<Lessons, UpdateLessonsCommand>();
@@ -34,8 +35,8 @@ namespace BusinessCourse_Application
       CreateMap<AddMembershipCommand, Membership>();
       CreateMap<UpdateMembershipCommand, Membership>();
       CreateMap<Membership, UpdateMembershipCommand>();
-      CreateMap<UpdateMemberLessonsCommand, Member_LessonSessions>();
-      CreateMap<Member_LessonSessions, UpdateMemberLessonsCommand>();
+      CreateMap<UpdateMemberLessonsCommand, MemberLessonSessions>();
+      CreateMap<MemberLessonSessions, UpdateMemberLessonsCommand>();
     }
   }
 }

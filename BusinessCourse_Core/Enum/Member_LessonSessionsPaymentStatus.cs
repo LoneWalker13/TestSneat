@@ -10,8 +10,9 @@ namespace BusinessCourse_Core.Enum
   [JsonConverter(typeof(JsonStringEnumConverter))]
   public enum Member_LessonSessionsPaymentStatus
   {
-    Unpaid = 0,
-    Deposits = 1,
-    FullyPaid = 2
+    未付款 = 0,
+    提交定金 = 1,
+    全额付款 = 2,
+    全部 = 3
   }
 }

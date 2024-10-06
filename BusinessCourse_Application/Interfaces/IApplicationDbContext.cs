@@ -13,8 +13,10 @@ namespace BusinessCourse_Application.Interfaces
     DbSet<Members> Members { get; set; }
     DbSet<Lessons> Lessons { get; set; }
     DbSet<LessonSessions> LessonSessions { get; set; }
-    DbSet<Member_LessonSessions> MemberLessonSessions { get; set; }
+    DbSet<MemberLessonSessions> MemberLessonSessions { get; set; }
     DbSet<Membership> Membership { get; set; }
+    DbSet<ViewMemberList> ViewMemberList { get; set; }
+    DbSet<GetMemberLessonSessionsList> GetMemberLessonSessionsList { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
   }
 }

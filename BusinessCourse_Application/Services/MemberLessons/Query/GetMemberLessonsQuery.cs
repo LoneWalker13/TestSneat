@@ -11,15 +11,17 @@ using System.Threading.Tasks;
 
 namespace BusinessCourse_Application.Services.MemberLessons.Query
 {
-  public class GetMemberLessonsQuery : IRequest<List<Member_LessonSessions>>
+  public class GetMemberLessonsQuery : IRequest<List<GetMemberLessonSessionsList>>
   {
-    public int LessonSessionId { get; set; }
+    public int LessonId { get; set; }
+    public int LessonSessionsId { get; set; }
     public string Name { get; set; }
+    public string PhoneNumber { get; set; }
     public Member_LessonSessionsPaymentStatus PaymentStatus { get; set; }
     public Member_LessonSessionsAttendanceStatus AttendanceStatus { get; set; }
   }
 
-  public class GetMemberLessonsQueryHandler : IRequestHandler<GetMemberLessonsQuery, List<Member_LessonSessions>>
+  public class GetMemberLessonsQueryHandler : IRequestHandler<GetMemberLessonsQuery, List<GetMemberLessonSessionsList>>
   {
     private readonly IMemberLessonSessions _memberLessonSessions;
 
@@ -28,9 +30,9 @@ namespace BusinessCourse_Application.Services.MemberLessons.Query
       _memberLessonSessions = memberLessonSessions;
     }
 
-    public async Task<List<Member_LessonSessions>> Handle(GetMemberLessonsQuery request, CancellationToken cancellationToken)
+    public async Task<List<GetMemberLessonSessionsList>> Handle(GetMemberLessonsQuery request, CancellationToken cancellationToken)
     {
-      var lessonSessions = await _memberLessonSessions.GetMemberLessonSessionsList(request.LessonSessionId,request.Name,request.PaymentStatus,request.AttendanceStatus);
+      var lessonSessions = _memberLessonSessions.GetMemberLessonSessionsList(request.PhoneNumber,request.Name, request.LessonId,request.LessonSessionsId, request.AttendanceStatus,request.PaymentStatus);
 
       return lessonSessions;
     }

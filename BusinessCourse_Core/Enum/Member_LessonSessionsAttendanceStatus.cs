@@ -10,7 +10,8 @@ namespace BusinessCourse_Core.Enum
   [JsonConverter(typeof(JsonStringEnumConverter))]
   public enum Member_LessonSessionsAttendanceStatus
   {
-    Unattend = 0,
-    Attended = 1
+    未出席 = 0,
+    出席 = 1,
+    全部 = 2,
   }
 }

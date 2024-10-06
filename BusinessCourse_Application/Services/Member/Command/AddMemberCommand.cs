@@ -15,10 +15,12 @@ namespace BusinessCourse_Application.Services.Member.Command
   public class AddMemberCommand : IRequest<Result>
   {
     public string ChineseName { get; set; }
-    public string EnglishName { get; set; }
+    public string? EnglishName { get; set; }
     public string PhoneNumber { get; set; }
-    public string Email { get; set; }
-    public string MemberCode { get; set; }
+    public string? Email { get; set; }
+    public string? MemberCode { get; set; }
+    public int MembershipId { get; set; }
+    public string? Remark { get; set; }
 
     public class AddMemberCommandHandler : IRequestHandler<AddMemberCommand, Result>
     {

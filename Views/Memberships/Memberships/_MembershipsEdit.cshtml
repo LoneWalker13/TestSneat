@@ -17,11 +17,11 @@
                 <div class="row g-6 mb-4">
                     <div class="col mb-0">
                         <label class="form-label">@Localizer.GetString("Rank")</label>
-                        <input type="text" id="membershipRank" class="form-control" asp-for="Rank">
+                        <input type="text" id="membershipRank" class="form-control" asp-for="Rank" required>
                     </div>
                     <div class="col mb-0">
                         <label  class="form-label">@Localizer.GetString("Tier")</label>
-                        <input type="number" id="membershipTier" class="form-control" asp-for="Tier">
+                        <input type="number" id="membershipTier" class="form-control" asp-for="Tier" required>
                     </div>
                 </div>
                 <div class="row g-6">

@@ -78,7 +78,7 @@ namespace BusinessCourse_Application.Services.MemberLessons.Command
             else
               memberId = existMember.Id;
 
-            var existMemberLessonSession = _context.MemberLessonSessions.FirstOrDefault(x => x.MemberId == memberId && x.LessonSessionsId == request.LessonSessionsId);
+            var existMemberLessonSession = _context.MemberLessonSessions.FirstOrDefault(x => x.MembersId == memberId && x.LessonSessionsId == request.LessonSessionsId);
 
             if (existMemberLessonSession != null)
             {
@@ -86,9 +86,9 @@ namespace BusinessCourse_Application.Services.MemberLessons.Command
               continue;
             }
 
-            var memberLessonSession = new Member_LessonSessions()
+            var memberLessonSession = new MemberLessonSessions()
             {
-              MemberId = memberId,
+              MembersId = memberId,
               LessonsId = lesson.Id,
               LessonSessionsId = request.LessonSessionsId,
               DepositAmount = signUpMember.DepositAmount,

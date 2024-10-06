@@ -10,8 +10,7 @@ namespace BusinessCourse_Application.Interfaces
 {
   public interface IMemberLessonSessions
   {
-    Task<List<Member_LessonSessions>> GetMemberLessonSessionsList(int lessonSessionId, string name, Member_LessonSessionsPaymentStatus paymentStatus, Member_LessonSessionsAttendanceStatus attendanceStatus);
-
-    Task<Member_LessonSessions> GetMemberLessonSessionsById ( int memberLessionSessionId); 
+    Task<MemberLessonSessions> GetMemberLessonSessionsById ( int memberLessionSessionId);
+    List<GetMemberLessonSessionsList> GetMemberLessonSessionsList(string phoneNumber,string name, int lessonsId, int lessonSessionsId, Member_LessonSessionsAttendanceStatus attendanceStatus, Member_LessonSessionsPaymentStatus paymentStatus);
   }
 }

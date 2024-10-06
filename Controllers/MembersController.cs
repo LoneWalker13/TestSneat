@@ -1,78 +1,75 @@
 
+using AutoMapper;
 using AutoMapper.Internal;
-using BusinessCourse.Models.Members.Members;
+using BusinessCourse_Application.Interfaces;
+using BusinessCourse_Application.Services.Lessons.Command;
 using BusinessCourse_Application.Services.Lessons.Query;
 using BusinessCourse_Application.Services.Member.Command;
 using BusinessCourse_Application.Services.Member.Query;
 using BusinessCourse_Application.Services.Membership.Query;
+using BusinessCourse_Core.Common;
 using BusinessCourse_Core.Entities;
+using BusinessCourse_Core.Enum;
 using BusinessCourse_Infrastructure.Services;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace BusinessCourse.Controllers
 {
   public class MembersController : MediatRController
   {
     private readonly IConfiguration _configuration;
-    //private readonly IDateTimeService _dateTimeService;
-    public MembersController(IConfiguration configuration)
+    private readonly IMapper _mapper;
+    public MembersController(IConfiguration configuration, IMapper mapper)
     {
       _configuration = configuration;
+      _mapper = mapper;
     }
 
     public async Task<IActionResult> Index()
     {
-
-      return View("MemberList/MemberList");
+      var membershipsItems = await GetMemberships();
+      ViewBag.RankList = membershipsItems;
+      return View("Members/Index");
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMemberList(string name, string phoneNumber,  string memberCode)
+    public async Task<IActionResult> GetMemberList(DateTime dateFrom, DateTime dateTo, string name, string phoneNumber,  string memberCode, int rank)
     {
-      var response = await Mediator.Send(new GetMemberListQuery() {Name = name, PhoneNumber = phoneNumber, MemberCode= memberCode });
+      var response = await Mediator.Send(new GetMemberListQuery() {Name = name, PhoneNumber = phoneNumber, MemberCode= memberCode,From = dateFrom, To = dateTo,Rank = rank });
+      response.ForEach(x => x.CreatedStr = DateTimeHelper.GetUtcDateTime(x.Created));
       var JsonResult = JsonConvert.SerializeObject(new { aaData = response });
 
       return Json(JsonResult);
     }
 
-
-    //[CustomAuthorize(Roles = "member.view")]
-    [HttpGet]
-    public async Task<IActionResult> MemberDetails(string loginId, string currentTab = "AccountDetails")
+    private async Task<List<SelectListItem>> GetMemberships()
     {
-      //var breadcrumbs = new List<BreadcrumbItem>
-      //      {
-      //          new BreadcrumbItem { Title = "Home", Url = Url.Action("Index", "Home"), IsActive = false },
-      //          new BreadcrumbItem { Title = "Member List", Url = Url.Action("MemberList", "Member"), IsActive = false },
-      //          new BreadcrumbItem { Title = $"Member", Url = "#", IsActive = true },
-      //      };
-      //ViewBag.Breadcrumbs = breadcrumbs;
-      //ViewBag.LoginId = loginId;
-      //ViewBag.CurrentTab = currentTab;
-      //var clientTenants = await Mediator.Send(new GetClientUnderTenantByTenantIdQuery());
-      //var clientTenant = clientTenants.Where(r => r.ClientId == _configuration["IdentityServer:ClientId"]).FirstOrDefault();
-      //ViewBag.WalletType = clientTenant.WalletType;
-      //ViewBag.IsMW = _currentTenantService.IsMW;
-      return View("MemberList/MemberDetails");
+      var memberships = await Mediator.Send(new GetMembershipListQuery());
+      memberships = memberships.Where(x => x.Status).ToList();
+      List<SelectListItem> membershipsItems = new List<SelectListItem>();
+      membershipsItems.Add(new SelectListItem() { Text = "---   全部   ---", Value = "0", Selected = true });
+      memberships.ToList().ForEach(r => membershipsItems.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Rank }));
+      return membershipsItems;
     }
 
 
+
     [HttpGet]
-    public async Task<IActionResult> UpdateMember(int memberId)
+    public async Task<IActionResult> UpdateMember(int id)
     {
-      var member = await Mediator.Send(new GetMemberByIdQuery() { MemberId = memberId });
+      var member = await Mediator.Send(new GetMemberByIdQuery() { MemberId = id });
 
-      var membershipList = await Mediator.Send(new GetMembershipListQuery());
-      List<SelectListItem> membershipListItem = new List<SelectListItem>();
-      membershipListItem.Add(new SelectListItem() { Text = "--- 请选择 ---", Value = "0", Selected = true });
-      membershipList.ToList().ForEach(r => membershipListItem.Add(new SelectListItem() { Value = r.Id.ToString(), Text = r.Rank }));
+      var membershipsItems = await GetMemberships();
+      membershipsItems.RemoveAt(0);
+      ViewBag.RankList = membershipsItems;
 
-      var model = new MemberViewModel() { Member = member,MembershipListItem = membershipListItem };
+      var model = _mapper.Map(member, new UpdateMemberCommand());
 
-      return PartialView("MemberList/MemberEdit", model);
+      return PartialView("Members/_MembersEdit", model);
     }
 
     [HttpGet]
@@ -81,12 +78,11 @@ namespace BusinessCourse.Controllers
       //ViewBag.LoginId = loginId;
       ViewBag.currentTransactionTab = currentTab;
       var lessons = await Mediator.Send(new GetLessonsQuery());
-      var model = new MemberLessionSessionModel() { Lessons = lessons };
       //ViewBag.IsMW = _currentTenantService.IsMW;
       //var clientTenants = await Mediator.Send(new GetClientUnderTenantByTenantIdQuery());
       //var clientTenant = clientTenants.Where(r => r.ClientId == _configuration["IdentityServer:ClientId"]).FirstOrDefault();
       //ViewBag.WalletType = clientTenant.WalletType;
-      return PartialView("MemberList/_MemberLessionSession", lessons);
+      return PartialView("Members/_MemberLessionSession", lessons);
     }
 
     [HttpGet]
@@ -100,22 +96,27 @@ namespace BusinessCourse.Controllers
 
 
     [HttpGet]
-    public IActionResult AddMember()
+    public async Task<IActionResult> AddMember()
     {
-      return PartialView("MemberList/_MemberAdd");
+      var membershipsItems = await GetMemberships();
+      membershipsItems.RemoveAt(0);
+      ViewBag.RankList = membershipsItems;
+      return PartialView("Members/_MembersAdd");
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddMember(string chineseName, string englishName, string phoneNumber, string email, string memberCode )
+    public async Task<IActionResult> AddMember(AddMemberCommand request )
     {
-      var response = await Mediator.Send(new AddMemberCommand()
+      if (!ModelState.IsValid)
       {
-        ChineseName = chineseName,
-        EnglishName = englishName,
-        PhoneNumber = phoneNumber,
-        Email = email,
-        MemberCode = memberCode
-      });
+        var membershipsItems = await GetMemberships();
+        membershipsItems.RemoveAt(0);
+        ViewBag.RankList = membershipsItems;
+        Response.StatusCode = 400;
+        return PartialView("Members/_MembersAdd", request);
+      }
+
+      var response = await Mediator.Send(request);
       return Json(new
       {
         result = response,
@@ -123,18 +124,18 @@ namespace BusinessCourse.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> UpdateMember(int memberId, string chineseName, string englishName, string email, string memberCode, string remark, int membershipId)
+    public async Task<IActionResult> UpdateMember(UpdateMemberCommand request)
     {
-      var response = await Mediator.Send(new UpdateMemberCommand()
+      if (!ModelState.IsValid)
       {
-        MemberId = memberId,
-        ChineseName = chineseName,
-        EnglishName = englishName,
-        Remark = remark,
-        Email = email,
-        MemberCode = memberCode,
-        MembershipId = membershipId
-      });
+        var membershipsItems = await GetMemberships();
+        membershipsItems.RemoveAt(0);
+        ViewBag.RankList = membershipsItems;
+        Response.StatusCode = 400;
+        return PartialView("Members/_MembersEdit", request);
+      }
+
+      var response = await Mediator.Send(request);
       return Json(new
       {
         result = response,

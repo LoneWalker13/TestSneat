@@ -77,6 +77,12 @@
         }
 
         function initMembershipTable() {
+            $('#searchString').on('keyup', function (event) {
+                if (event.key === "Enter") {
+                    globalTableData.api().ajax.reload();
+                }
+            });
+
             var table = $("#MydataTableDiv").dataTable({
                 "lengthChange": false, 
                 "pageLength": 20,

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace BusinessCourse_Application.Services.MemberLessons.Query
 {
-  public class GetMemberLessonsByIdQuery : IRequest<Member_LessonSessions>
+  public class GetMemberLessonsByIdQuery : IRequest<MemberLessonSessions>
   {
     public int MemberLessonsId { get; set; }
   }
 
-  public class GetMemberLessonsByIdQueryHandler : IRequestHandler<GetMemberLessonsByIdQuery,Member_LessonSessions>
+  public class GetMemberLessonsByIdQueryHandler : IRequestHandler<GetMemberLessonsByIdQuery,MemberLessonSessions>
   {
     private readonly IMemberLessonSessions _memberLessonSessions;
 
@@ -23,7 +23,7 @@ namespace BusinessCourse_Application.Services.MemberLessons.Query
       _memberLessonSessions = memberLessonSessions;
     }
 
-    public async Task<Member_LessonSessions> Handle(GetMemberLessonsByIdQuery request, CancellationToken cancellationToken)
+    public async Task<MemberLessonSessions> Handle(GetMemberLessonsByIdQuery request, CancellationToken cancellationToken)
     {
       var memberLessonSessions = await _memberLessonSessions.GetMemberLessonSessionsById(request.MemberLessonsId);
 

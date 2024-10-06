@@ -1,5 +1,333 @@
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+
 @{
+    ViewData["Title"] = "MemberLessons";
+}
+<div class="modal fade" id="memberLessonsModal" role="dialog" tabindex="-1" aria-hidden="true"></div>
+<div class="row">
+    <!-- Basic Layout -->
+    <div class="col-xxl">
+        <div class="card mb-2">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">@Localizer.GetString("MemberLessons")</h5> <small class="text-muted float-end"><button type="button" onclick="AddMemberLessons()" class="btn btn-primary"><i class="bx bx-plus"></i> &nbsp @Localizer.GetString("AddMemberLessons")</button></small>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("Lessons") :</label>
+                            <div class="col-md-8">
+                                <select id="lessons" class="form-select" onchange="UpdateLessonSessions()">
+                                    @foreach (var lesson in ViewBag.LessonList)
+                                    {
+                                        <option value="@lesson.Value" )>
+                                            @lesson.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("LessonSessions") :</label>
+                            <div class="col-md-8">
+                                <select id="lessonSessions" class="form-select">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("PhoneNumber") :</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="searchStringPhoneNumber" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("Name") :</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="searchStringName" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("PaymentStatus") :</label>
+                            <div class="col-md-8">
+                                <select id="paymentStatus" class="form-select">
+                                    @foreach (var paymentStatus in ViewBag.PaymentStatus)
+                                    {
+                                        <option value="@paymentStatus.Value" )>
+                                            @paymentStatus.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4 col-form-label" for="basic-default-name">@Localizer.GetString("AttendStatus") :</label>
+                            <div class="col-md-8">
+                                <select id="attendStatus" class="form-select">
+                                    @foreach (var attendStatus in ViewBag.AttendStatus)
+                                    {
+                                        <option value="@attendStatus.Value" )>
+                                            @attendStatus.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row float-end">
+                    <small class="text-muted float-end"><button type="button" id="btnsearch" class="btn btn-info">@Localizer.GetString("Search")</button></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Basic Bootstrap Table -->
+<div class="card">
+    <div class="text-nowrap table-striped table-responsive-sm">
+        <table id="MydataTableDiv" class="table">
+            <thead>
+                <tr>
+                    <th>@Localizer.GetString("ChineseName")</th>
+                    <th>@Localizer.GetString("EnglishName")</th>
+                    <th>@Localizer.GetString("PhoneNumber")</th>
+                    <th>@Localizer.GetString("DepositAmount")</th>
+                    <th>@Localizer.GetString("PaymentStatus")</th>
+                    <th>@Localizer.GetString("AttendStatus")</th>
+                    <th>@Localizer.GetString("Created")</th>
+                    <th>@Localizer.GetString("Actions")</th>
+                    <th style="display:none">@Localizer.GetString("Id")</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<!--/ Basic Bootstrap Table -->
+@section modal {
+
+}
+
+@section PageScripts {
+    <script>
+        function UpdateLessonSessions() {
+            var value = $('#lessons').val();
+            if (value == 0) {
+                $('#lessonSessions').html('');
+            }
+            else {
+                Site.AjaxGet("MemberLessons/GetLessonSessionsByLessonsId/" + value,
+                    function (data) {
+                        $('#lessonSessions').html('');
+                        var fieldData = '';
+                        if (data != null && data != '') {
+                            for (i = 0; i < data.length; i++) {
+                                fieldData += "<option value='" + data[i].id + "'>" + data[i].sessionDateStr + "</option>";
+                            }
+                        }
+                        $('#lessonSessions').append(fieldData);
+                });
+            }
+
+
+        }
+
+        var globalTableData = [];
+        $('#memberLessonsModal').on('hidden.bs.modal', function () {
+                // Reset form fields
+                $(this).find('form').trigger('reset');
+          });
+
+          function AddMemberLessons(){
+            Site.AjaxGet("/MemberLessons/SignUpMemberLessons",
+                  function (data) {
+                    $('#memberLessonsModal').html(data);
+                    $('#memberLessonsModal').modal('show');
+                  });
+
+          }
+
+          function EditMemberLessons(id) {
+            Site.AjaxGet("/MemberLessons/EditMemberLessonSessions/" + id,
+                  function (data) {
+                    $('#memberLessonsModal').html(data);
+                    $('#memberLessonsModal').modal('show');
+                  }
+            );
+          }
+
+
+
+          // function DeleteLessonSessions(id) {
+          //     Site.AjaxGet("/LessonSessions/DeleteLessonSessions/" + id,
+          //         function (data) {
+          //             $('#lessonSessionsModal').html(data);
+          //             $('#lessonSessionsModal').modal('show');
+          //         });
+
+          // }
+
+        function initMemberLessonSessionsTable() {
+              $('#searchStringName').on('keyup', function (event) {
+                  if (event.key === "Enter") {
+                      globalTableData.api().ajax.reload();
+                  }
+              });
+              $('#searchStringPhoneNumber').on('keyup', function (event) {
+                  if (event.key === "Enter") {
+                      globalTableData.api().ajax.reload();
+                  }
+              });
+
+              var table = $("#MydataTableDiv").dataTable({
+                  "lengthChange": false,
+                  "pageLength": 50,
+                  "searching": false,
+                  "bProcessing": false,
+                  "bSort": true,
+                  "sPaginationType": "full_numbers",
+                  "bServerSide": false,
+                "sAjaxSource": "/MemberLessons/GetMemberLessonsList",
+                  "fnServerData": function (sSource, aoData, fnCallback) {
+                      $.ajax({
+                          "dataType": 'json',
+                          "type": "Get",
+                          "url": sSource,
+                        "data": {
+                            "name": $("#searchStringName").val(), "phoneNumber": $("#searchStringPhoneNumber").val(), "lessonsId": $("#lessons").find(":selected").val(),
+                            "lessonSessionsId": $("#lessonSessions").find(":selected").val(), "paymentStatus": $("#paymentStatus").find(":selected").val(), "attendStatus": $("#attendStatus").find(":selected").val()
+                        },
+                          "success": function (json) {
+                              fnCallback(JSON.parse(json));
+                          }
+                      })
+                  },
+                  "aoColumns": [
+                    { "mData": "ChineseName" },
+                    { "mData": "EnglishName" },
+                    { "mData": "PhoneNumber" },
+                    { "mData": "DepositAmount" },
+                    { "mData": "PaymentStatus" },
+                    { "mData": "AttendStatus" },
+                    { "mData": "CreatedStr" },
+                    { "mData": "action" },
+                    { "mData": "Id" }
+                  ],
+                  "aoColumnDefs": [
+                      {
+                          "aTargets": [3],
+                          "mRender": function (data, type, row) {
+                              if (data == null) {
+                                  return '-';
+                              }
+                              else {
+                                  return data;
+
+                              }
+                          },
+                      },
+                      {
+                          "aTargets": [4],
+                          "mRender": function (data, type, row) {
+                              if (data == 1) {
+                                  var actions = '<span class="badge bg-label-primary me-1">提交定金</span>'
+                                  return actions;
+                              }
+                              else if (data == 0)
+                              {
+                                  var actions = '<span class="badge bg-label-warning me-1">未付款</span>'
+                                  return actions;
+
+                              }
+                              else if (data == 2)
+                              {
+                                  var actions = '<span class="badge bg-label-success me-1">全额付款</span>'
+                                  return actions;
+
+                              }
+                          },
+                      },
+                      {
+                          "aTargets": [5],
+                          "mRender": function (data, type, row) {
+                              if (data == 1)
+                              {
+                                var actions = '<span class="badge bg-label-success me-1">出席</span>'
+                                  return actions;
+                              }
+                              else if (data == 0) {
+                                  var actions = '<span class="badge bg-label-warning me-1">未出席</span>'
+                                  return actions;
+
+                              }
+                          },
+                      },
+                      {
+                          "aTargets": [-2],
+                          "visible": true,
+                          "searchable": false,
+                          "mRender": function (data, type, row) {
+                            var action = '<div class="dropdown"><button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button><div class="dropdown-menu"><a class="dropdown-item" onclick="EditMemberLessons(\'' + row.Id + '\')";"><i class="bx bx-edit-alt me-1"></i> Edit</a><a class="dropdown-item" onclick="DeleteLessonSessions(\'' + row.Id + '\')"><i class="bx bx-trash me-1"></i> Delete</a></div></div>';
+                              return action;
+                          }
+                      },
+                      {
+                          "aTargets": [-1],
+                          "visible": false,
+                          "searchable": false
+                      },
+                  ],
+                  "order": [[6, "desc"]],
+              });
+
+              $("#MydataTableDiv_filter").css("float", "right");
+              $("#MydataTableDiv_paginate").css("float", "right");
+              $("#MydataTableDiv_length").find("label").css("display", "flex");
+              $("#MydataTableDiv_length").find("label").css("align-items", "center");
+              $("#MydataTableDiv_length").find("select").css("width", "55px");
+              $("#MydataTableDiv_length").find("select").css("margin", "5px");
+              $("#MydataTableDiv_filter").find("label").css("display", "flex");
+              $("#MydataTableDiv_filter").find("label").css("align-items", "center");
+              $("#MydataTableDiv_filter").css("float", "right");
+              $("#MydataTableDiv_filter").find("input").css("margin", "5px");
+              $("#MydataTableDiv_filter").find("input").css("margin-right", "0px");
+
+              $('#btnsearch').on('click', function () {
+                globalTableData.api().ajax.reload();
+              });
+
+              globalTableData = table;
+
+              // $(function () {
+              //     $('#memberGroupFilterForm').each(function () {
+              //         $(this).find('input').keypress(function (e) {
+              //             if (e.which == 10 || e.which == 13) {
+              //                 $('#btnsearch').click();
+              //             }
+              //         });
+              //     });
+              // });
+        }
+
+          $(document).ready(async function () {
+            initMemberLessonSessionsTable();
+          })
+    </script>
 }

@@ -1,5 +1,223 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+
+@model BusinessCourse_Application.Services.MemberLessons.Command.SignUpMemberLessonsCommand
+
+<form id="memberLessonsForm" enctype="multipart/form-data">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">@Localizer.GetString("AddMemberLessons")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                      <label class=" col-form-label" for="basic-default-name">@Localizer.GetString("Lessons")</label>
+                      <div class="width-100">
+                        <select id="addLessons" class="form-select" onchange="UpdateAddLessonSessions()" required asp-for="LessonsId">
+                              @foreach (var lesson in ViewBag.LessonsList)
+                              {
+                                  <option value="@lesson.Value" )>
+                                      @lesson.Text
+                                  </option>
+                              }
+                          </select>
+                      </div>
+                </div>
+                <div class="row mb-4 g-6">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("LessonSessions")</label>
+                            <div class="">
+                                <select id="addlessonSessions" class="form-select" asp-for="LessonSessionsId" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-md-2 col-form-label" for="basic-default-name">@Localizer.GetString("PhoneNumber")</label>
+                            <div class="co-md-10">
+                                <input type="tel" class="form-control" id="phoneNumber" pattern="(\+60|60|0)[1-9][0-9]{8,9}" required asp-for="PhoneNumber" placeholder="0XXXXXXXXX">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4 row g-6">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("ChineseName")</label>
+                            <div class="">
+                                <input type="text" id="chineseName" class="form-control" asp-for="ChineseName" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("EnglishName")</label>
+                            <div class="">
+                                <input type="text" id="englishName" class="form-control" asp-for="EnglishName" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4 row g-6">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("DepositAmount")</label>
+                            <div class="">
+                                <input type="number" step="0.01" min="0" id="lessonPrice" class="form-control" asp-for="DepositAmount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("PaymentStatus") :</label>
+                            <div class="">
+                                <select id="addPaymentStatus" class="form-select" asp-for="PaymentStatus">
+                                    @foreach (var paymentStatus in ViewBag.PaymentStatus)
+                                    {
+                                        <option value="@paymentStatus.Value" )>
+                                            @paymentStatus.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4 row g-6">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("AttendStatus")</label>
+                            <div class="">
+                                <select id="addAttendStatus" class="form-select" asp-for="AttendStatus">
+                                    @foreach (var attendStatus in ViewBag.AttendStatus)
+                                    {
+                                        <option value="@attendStatus.Value" )>
+                                            @attendStatus.Text
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4 row g-6">
+                    <label class="col-form-label" for="basic-default-name">@Localizer.GetString("Remark")</label>
+                    <div class="">
+                        <textarea id="remark" class="form-control" name="largeTextBox" rows="10" cols="50" asp-for="Remark"></textarea>
+                    </div>
+                </div>
+
+@*                 <div class="mb-4 row g-6">
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("Email")</label>
+                            <div class="">
+                                <input type="email" id="email" class="form-control" asp-for="Email">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("MemberCode")</label>
+                            <div class="">
+                                <input type="text" id="memberCode" class="form-control" asp-for="MemberCode">
+                            </div>
+                        </div>
+                    </div>
+                </div> *@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="submit" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+    </div>
+</form>
+
+<script>
+    $("#submit").click(function () {
+        var formValid = $('#memberLessonsForm').valid();
+
+        var phoneInput = document.getElementById("phoneNumber").value;
+        var phonePattern = /^(\+60|60|0)[1-9][0-9]{8,9}$/;
+
+        if (!phonePattern.test(phoneInput)) {
+            alert("请输入正确的电话号码。");
+            return;
+        }
+
+        if (!formValid) return;
+        // initToastr();
+        showLoading();
+        addRecord();
+    });
+
+    function UpdateAddLessonSessions() {
+        var value = $('#addLessons').val();
+        if (value == 0) {
+            $('#addlessonSessions').html('');
+        }
+        else {
+            Site.AjaxGet("MemberLessons/GetAddLessonSessionsByLessonsId/" + value,
+                function (data) {
+                    $('#addlessonSessions').html('');
+                    var fieldData = '';
+                    if (data != null && data != '') {
+                        for (i = 0; i < data.length; i++) {
+                            fieldData += "<option value='" + data[i].id + "'>" + data[i].sessionDateStr + "</option>";
+                        }
+                    }
+                    $('#addlessonSessions').append(fieldData);
+                });
+        }
+
+
+    }
+
+    function addRecord() {
+        var formData = new FormData($('#memberLessonsForm')[0]);
+
+        $.ajax({
+            url: "/MemberLessons/SignUpMemberLessons",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data: formData,
+            dataType: "json",
+            success: function (data) {
+                hideLoading();
+                if (data.result.succeeded == true) {
+                    toastr["success"]("The action has been completed successfully", "Success");
+                    globalTableData.api().ajax.reload();
+                    $('#memberLessonsModal').modal('hide');
+                } else {
+                    toastr["error"](data.message, "Error");
+                }
+            },
+            error: function (e) {
+                hideLoading();
+                $('#memberLessonsModal').modal('hide');
+                toastr["error"](e, "Error");
+            }
+        });
+    }
+
+    var showLoading = function () {
+        $(".loading").show();
+    }
+
+    var hideLoading = function () {
+        $(".loading").hide();
+    }
+
+
+    $(document).ready(function () {
+        UpdateAddLessonSessions();
+    })
+</script>

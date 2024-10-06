@@ -3,90 +3,81 @@
 @inject IViewLocalizer Localizer
 
 
-@model BusinessCourse_Application.Services.Member.Command.UpdateMemberCommand
+@model BusinessCourse_Application.Services.Member.Command.AddMemberCommand
 
 <form id="membersForm" enctype="multipart/form-data">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">@Localizer.GetString("EditMember")</h5>
+                <h5 class="modal-title" id="exampleModalLabel1">@Localizer.GetString("AddMember")</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" asp-for="Id" />
                 <div class="row mb-4 g-6">
                     <div class="col-6">
                         <div class="row">
                             <label class="col-md-2 col-form-label" for="basic-default-name">@Localizer.GetString("PhoneNumber")</label>
                             <div class="co-md-10">
-                                <input type="tel" class="form-control" id="phoneNumber" pattern="(\+60|60|0)[1-9][0-9]{8,9}" asp-for="PhoneNumber" disabled />
-                                <input type="hidden" asp-for="PhoneNumber" />
+                                <input type="tel" class="form-control" id="phoneNumber" pattern="(\+60|60|0)[1-9][0-9]{8,9}" required asp-for="PhoneNumber" placeholder="0XXXXXXXXX">
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="row">
+                          <div class="row">
                             <label class=" col-form-label" for="basic-default-name">@Localizer.GetString("Rank")</label>
                             <div class="">
-                                <select id="membership" class="form-select" asp-for="MembershipId">
-                                    @foreach (var status in ViewBag.RankList)
-                                    {
-                                        <option value="@status.Value" )>
-                                            @status.Text
-                                        </option>
-                                    }
-                                </select>
+                                  <select id="membership" class="form-select" asp-for="MembershipId">
+                                      @foreach (var status in ViewBag.RankList)
+                                      {
+                                          <option value="@status.Value" )>
+                                              @status.Text
+                                          </option>
+                                      }
+                                  </select>
                             </div>
-                        </div>
+                          </div>
                     </div>
                 </div>
                 <div class="mb-4 row g-6">
-                    <div class="col-6">
-                        <div class="row">
-                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("ChineseName")</label>
-                            <div class="">
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="col-form-label" for="basic-default-name">@Localizer.GetString("ChineseName")</label>
+                                <div class="">
                                 <input type="text" id="chineseName" class="form-control" asp-for="ChineseName" required>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("EnglishName")</label>
-                            <div class="">
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="col-form-label" for="basic-default-name">@Localizer.GetString("EnglishName")</label>
+                                <div class="">
                                 <input type="text" id="englishName" class="form-control" asp-for="EnglishName" required>
+                                </div>
                             </div>
                         </div>
-                    </div>
                 </div>
                 <div class="mb-4 row g-6">
-                    <div class="col-6">
-                        <div class="row">
-                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("Email")</label>
-                            <div class="">
-                                <input type="email" id="email" class="form-control" asp-for="Email">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <label class="col-form-label" for="basic-default-name">@Localizer.GetString("MemberCode")</label>
-                            <div class="">
-                                <input type="text" id="memberCode" class="form-control" asp-for="MemberCode">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-4 g-6">
-                    <label class="col-form-label">@Localizer.GetString("Status")</label>
-                    <div class="">
-                        <input class="mx-2" type="radio" asp-for="Status" value="1" /> @Localizer.GetString("Active")
-                        <input class="mx-2" type="radio" asp-for="Status" value="0" /> @Localizer.GetString("Inactive")
-                    </div>
+                      <div class="col-6">
+                          <div class="row">
+                              <label class="col-form-label" for="basic-default-name">@Localizer.GetString("Email")</label>
+                              <div class="">
+                                  <input type="email" id="email" class="form-control" asp-for="Email">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-6">
+                          <div class="row">
+                              <label class="col-form-label" for="basic-default-name">@Localizer.GetString("MemberCode")</label>
+                              <div class="">
+                                  <input type="text" id="memberCode" class="form-control" asp-for="MemberCode">
+                              </div>
+                          </div>
+                      </div>
                 </div>
                 <div class="mb-4 row g-6">
                     <label class="col-form-label" for="basic-default-name">@Localizer.GetString("Remark")</label>
                     <div class="">
-                        <textarea id="remark" class="form-control" rows="10" cols="50" asp-for="Remark"></textarea>
+                        <textarea id="remark" class="form-control" name="largeTextBox" rows="10" cols="50" asp-for="Remark"></textarea>
                     </div>
                 </div>
             </div>
@@ -95,7 +86,7 @@
                 <button id="submit" type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
-    </div>
+        </div>
     </div>
 </form>
 
@@ -121,7 +112,7 @@
         var formData = new FormData($('#membersForm')[0]);
 
         $.ajax({
-            url: "/Members/UpdateMember",
+            url: "/Members/AddMember",
             type: "POST",
             contentType: false,
             processData: false,
